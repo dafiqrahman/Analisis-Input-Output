@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import plotly.express as px
 
 # set to wide mode
 st.set_page_config(layout="wide")
@@ -47,6 +48,8 @@ with tabs2:
     if transaksi_sektor is not None and input_sektor is not None:
         # create identity matrix
         I = np.identity(len(df_A))
+        print(len(df_A.columns))
+        print(df_A.columns)
         I = pd.DataFrame(I, df_A.index, df_A.columns)
         # substract df_A with identity matrix
         df_B = I.sub(df_A)
@@ -87,7 +90,32 @@ with tabs2:
         tfl['Rank'] = tfl['Total Forward Linkage'].rank(ascending=False)
         tfl
     st.write("Sektor Unggulan")
-
+    if transaksi_sektor is not None and input_sektor is not None:
+        # merge tbl and tfl
+        sektor_unggulan = tbl.copy()
+        # remove /n in index
+        sektor_unggulan = sektor_unggulan.reset_index()
+        tfl = tfl.reset_index()
+        sektor_unggulan['Total Forward Linkage'] = tfl['Total Forward Linkage']
+        sektor_unggulan.drop(columns="Rank", inplace=True)
+        sektor_unggulan['Indeks Daya Penyebaran'] = sektor_unggulan['Total Forward Linkage'].apply(
+            lambda x: "Tinggi" if x > 1 else "Rendah")
+        sektor_unggulan['Indeks Derajat Kepekaan'] = sektor_unggulan['Total Backward Linkage'].apply(
+            lambda x: "Tinggi" if x > 1 else "Rendah")
+        sektor_unggulan['Kelompok'] = sektor_unggulan.apply(lambda x: "1" if x['Indeks Daya Penyebaran'] == "Tinggi" and x['Indeks Derajat Kepekaan'] == "Tinggi" else "2" if x['Indeks Daya Penyebaran']
+                                                            == "Rendah" and x['Indeks Derajat Kepekaan'] == "Tinggi" else "3" if x['Indeks Daya Penyebaran'] == "Tinggi" and x['Indeks Derajat Kepekaan'] == "Rendah" else "4", axis=1)
+        sektor_unggulan[['index', 'Indeks Daya Penyebaran',
+                         'Indeks Derajat Kepekaan', 'Kelompok']]
+        # make scatter plot using value of total forward linkage and total backward linkage in sektor_unggulan
+        st.write("Scatter Plot")
+        fig = px.scatter(sektor_unggulan, x='Total Forward Linkage',
+                         y='Total Backward Linkage', color='Kelompok', hover_name='index')
+        # give horizontal line and vertical line in value of 1
+        fig.add_hline(y=1, line_dash="dot",
+                      annotation_text="", annotation_position="top right")
+        fig.add_vline(x=1, line_dash="dot",
+                      annotation_text="", annotation_position="top right")
+        st.plotly_chart(fig)
 with tabs3:
     st.write("angka penggandaan output")
     if transaksi_sektor is not None and input_sektor is not None and jumlah_tenaga_kerja is not None:
@@ -111,6 +139,5 @@ with tabs3:
         dot_tk.columns = ['Angka Penggandaan Kesempatan Kerja']
         dot_tk['Rank'] = dot_tk['Angka Penggandaan Kesempatan Kerja'].rank(
             ascending=False)
-        dot_tk['100 kali'] = dot_tk['Angka Penggandaan Kesempatan Kerja']*100
-        dot_tk['1000 kali'] = dot_tk['Angka Penggandaan Kesempatan Kerja']*1000
+        dot_tk['1.000.000 orang'] = dot_tk['Angka Penggandaan Kesempatan Kerja']*1000000
         dot_tk
