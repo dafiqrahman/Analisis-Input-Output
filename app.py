@@ -28,7 +28,8 @@ with tabs1:
     st.write('Data Transaksi Antar Sektor')
     if transaksi_sektor is not None:
         df1 = pd.read_excel(transaksi_sektor, index_col=0)
-        st.write(df1)
+        # set index to A,B,C, etc
+        df1
     st.write('Data Input Total Sektor')
     if input_sektor is not None:
         df2 = pd.read_excel(input_sektor)
@@ -67,7 +68,13 @@ with tabs2:
         tbl = tbl.to_frame()
         # get the index rank
         tbl['Rank'] = tbl['Total Backward Linkage'].rank(ascending=False)
-        tbl
+        tbl_test = tbl.reset_index()
+        tbl_test.columns = ['Nama Sektor', 'Total Backward Linkage', 'Rank']
+        # set tbl_test.index to sequence A,B,C, etc
+        sequence = [chr(i) for i in range(65, 65+len(tbl_test))]
+        tbl_test.index = sequence
+        tbl_test.index.name = 'Kode'
+        tbl_test
     st.write("Total Forward Linkage")
     if transaksi_sektor is not None and input_sektor is not None:
         tfl = df_B_inverse.sum(axis=1)
@@ -77,19 +84,32 @@ with tabs2:
         tfl = tfl.to_frame()
         # get the index rank
         tfl['Rank'] = tfl['Total Forward Linkage'].rank(ascending=False)
-        tfl
+        tfl_test = tfl.reset_index()
+        tfl_test.columns = ['Nama Sektor', 'Total Forward Linkage', 'Rank']
+        # set tfl_test.index to sequence A,B,C, etc
+        tfl_test.index = sequence
+        tfl_test.index.name = 'Kode'
+        tfl_test
     st.write("Index daya penyebaran")
     if transaksi_sektor is not None and input_sektor is not None:
         # tbl divide by mean of tbl
         tbl = tbl.div(tbl.mean())
         tbl['Rank'] = tbl['Total Backward Linkage'].rank(ascending=False)
-        tbl
+        tbl_test = tbl.reset_index()
+        tbl_test.columns = ['Nama Sektor', 'Total Backward Linkage', 'Rank']
+        tbl_test.index = sequence
+        tbl_test.index.name = 'Kode'
+        tbl_test
     st.write("Index derajat kepekaan")
     if transaksi_sektor is not None and input_sektor is not None:
         tfl = tfl.div(tfl.mean())
         tfl['Rank'] = tfl['Total Forward Linkage'].rank(ascending=False)
-        tfl
-    st.write("Sektor Unggulan")
+        tfl_test = tfl.reset_index()
+        tfl_test.columns = ['Nama Sektor', 'Total Forward Linkage', 'Rank']
+        tfl_test.index = sequence
+        tfl_test.index.name = 'Kode'
+        tfl_test
+    st.write("Pengelompokkan")
     if transaksi_sektor is not None and input_sektor is not None:
         # merge tbl and tfl
         sektor_unggulan = tbl.copy()
@@ -104,18 +124,35 @@ with tabs2:
             lambda x: "Tinggi" if x > 1 else "Rendah")
         sektor_unggulan['Kelompok'] = sektor_unggulan.apply(lambda x: "1" if x['Indeks Daya Penyebaran'] == "Tinggi" and x['Indeks Derajat Kepekaan'] == "Tinggi" else "2" if x['Indeks Daya Penyebaran']
                                                             == "Rendah" and x['Indeks Derajat Kepekaan'] == "Tinggi" else "3" if x['Indeks Daya Penyebaran'] == "Tinggi" and x['Indeks Derajat Kepekaan'] == "Rendah" else "4", axis=1)
-        sektor_unggulan[['index', 'Indeks Daya Penyebaran',
-                         'Indeks Derajat Kepekaan', 'Kelompok']]
+        sektor_unggulan.index = sequence
+        sektor_unggulan.index.name = 'Kode'
+        sektor_unggulan_test = sektor_unggulan[['index', 'Indeks Daya Penyebaran',
+                                                'Indeks Derajat Kepekaan', 'Kelompok']]
+        sektor_unggulan_test.columns = ['Nama Sektor', 'Indeks Daya Penyebaran',
+                                        'Indeks Derajat Kepekaan', 'Kelompok']
+        sektor_unggulan_test
         # make scatter plot using value of total forward linkage and total backward linkage in sektor_unggulan
         st.write("Scatter Plot")
         fig = px.scatter(sektor_unggulan, x='Total Forward Linkage',
                          y='Total Backward Linkage', color='Kelompok', hover_name='index')
+        # set x axis name "IDK"
+        fig.update_xaxes(title_text='IDP')
         # give horizontal line and vertical line in value of 1
+        fig.update_yaxes(title_text='IDK')
         fig.add_hline(y=1, line_dash="dot",
                       annotation_text="", annotation_position="top right")
         fig.add_vline(x=1, line_dash="dot",
                       annotation_text="", annotation_position="top right")
+        # add labels with index name
+        for i in range(len(sektor_unggulan)):
+            fig.add_annotation(x=sektor_unggulan['Total Forward Linkage'][i], y=sektor_unggulan['Total Backward Linkage']
+                               [i] - 0.02, text=sektor_unggulan.index[i], showarrow=False, arrowhead=0)
         st.plotly_chart(fig)
+    st.write("Sektor Unggulan")
+    if transaksi_sektor is not None and input_sektor is not None:
+        # print sektor unggulan in kelompok 1
+        sektor_unggulan_test[sektor_unggulan_test['Kelompok'] == '1']
+
 with tabs3:
     st.write("angka penggandaan output")
     if transaksi_sektor is not None and input_sektor is not None and jumlah_tenaga_kerja is not None:
