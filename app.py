@@ -119,9 +119,9 @@ with tabs2:
         tfl = tfl.reset_index()
         sektor_unggulan['Total Forward Linkage'] = tfl['Total Forward Linkage']
         sektor_unggulan.drop(columns="Rank", inplace=True)
-        sektor_unggulan['Indeks Daya Penyebaran'] = sektor_unggulan['Total Forward Linkage'].apply(
+        sektor_unggulan['Indeks Derajat Kepekaan'] = sektor_unggulan['Total Forward Linkage'].apply(
             lambda x: "Tinggi" if x > 1 else "Rendah")
-        sektor_unggulan['Indeks Derajat Kepekaan'] = sektor_unggulan['Total Backward Linkage'].apply(
+        sektor_unggulan['Indeks Daya Penyebaran'] = sektor_unggulan['Total Backward Linkage'].apply(
             lambda x: "Tinggi" if x > 1 else "Rendah")
         sektor_unggulan['Kelompok'] = sektor_unggulan.apply(lambda x: "1" if x['Indeks Daya Penyebaran'] == "Tinggi" and x['Indeks Derajat Kepekaan'] == "Tinggi" else "2" if x['Indeks Daya Penyebaran']
                                                             == "Rendah" and x['Indeks Derajat Kepekaan'] == "Tinggi" else "3" if x['Indeks Daya Penyebaran'] == "Tinggi" and x['Indeks Derajat Kepekaan'] == "Rendah" else "4", axis=1)
