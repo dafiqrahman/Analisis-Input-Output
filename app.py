@@ -151,7 +151,7 @@ with tabs2:
     st.write("Sektor Unggulan")
     if transaksi_sektor is not None and input_sektor is not None:
         # print sektor unggulan in kelompok 1
-        sektor_unggulan_test[sektor_unggulan_test['Kelompok'] == '1']
+        sektor_unggulan[sektor_unggulan['Kelompok'] == '1']
 
 with tabs3:
     st.write("angka penggandaan output")
