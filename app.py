@@ -96,7 +96,7 @@ with tabs2:
         tbl = tbl.div(tbl.mean())
         tbl['Rank'] = tbl['Total Backward Linkage'].rank(ascending=False)
         tbl_test = tbl.reset_index()
-        tbl_test.columns = ['Nama Sektor', 'Total Backward Linkage', 'Rank']
+        tbl_test.columns = ['Nama Sektor', 'Indeks Daya penyebaran', 'Rank']
         tbl_test.index = sequence
         tbl_test.index.name = 'Kode'
         tbl_test
@@ -105,7 +105,7 @@ with tabs2:
         tfl = tfl.div(tfl.mean())
         tfl['Rank'] = tfl['Total Forward Linkage'].rank(ascending=False)
         tfl_test = tfl.reset_index()
-        tfl_test.columns = ['Nama Sektor', 'Total Forward Linkage', 'Rank']
+        tfl_test.columns = ['Nama Sektor', 'Indeks Derajat Kepekaan', 'Rank']
         tfl_test.index = sequence
         tfl_test.index.name = 'Kode'
         tfl_test
@@ -151,7 +151,10 @@ with tabs2:
     st.write("Sektor Unggulan")
     if transaksi_sektor is not None and input_sektor is not None:
         # print sektor unggulan in kelompok 1
-        sektor_unggulan[sektor_unggulan['Kelompok'] == '1']
+        sektor_unggulan = sektor_unggulan[sektor_unggulan['Kelompok'] == '1']
+        sektor_unggulan.columns = ['Nama Sektor', 'Indeks Daya Penyebaran',
+                                   'Indeks Derajat Kepekaan', 'Pengelompokkan IDP', "Pengelompokkan IDK", 'Kelompok']
+        sektor_unggulan
 
 with tabs3:
     st.write("angka penggandaan output")
@@ -162,6 +165,10 @@ with tabs3:
         sum_B = sum_B.T
         sum_B = sum_B.to_frame()
         sum_B['Rank'] = sum_B['Angka Penggandaan Output'].rank(ascending=False)
+        sum_B = sum_B.reset_index()
+        sum_B.columns = ['Nama Sektor', 'Angka Penggandaan Output', 'Rank']
+        sum_B.index = sequence
+        sum_B.index.name = 'Kode'
         sum_B
     st.write("Angka Pengganda Kesempatan Kerja")
     # df3 divide by sum of df2
@@ -177,4 +184,9 @@ with tabs3:
         dot_tk['Rank'] = dot_tk['Angka Penggandaan Kesempatan Kerja'].rank(
             ascending=False)
         dot_tk['orang'] = dot_tk['Angka Penggandaan Kesempatan Kerja']*1000000
+        dot_tk = dot_tk.reset_index()
+        dot_tk.columns = ['Nama Sektor',
+                          'Angka Penggandaan Kesempatan Kerja', 'Rank', 'orang']
+        dot_tk.index = sequence
+        dot_tk.index.name = 'Kode'
         dot_tk
