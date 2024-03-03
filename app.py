@@ -71,7 +71,8 @@ with tabs2:
         tbl_test = tbl.reset_index()
         tbl_test.columns = ['Nama Sektor', 'Total Backward Linkage', 'Rank']
         # set tbl_test.index to sequence A,B,C, etc
-        sequence = [chr(i) for i in range(65, 65+len(tbl_test))]
+        sequence = ['A', "B", "C", "D", "E", "F", "G", "H",
+                    "I", "J", "K", "L", "MN", "O", "P", "Q", "RSTU"]
         tbl_test.index = sequence
         tbl_test.index.name = 'Kode'
         tbl_test
