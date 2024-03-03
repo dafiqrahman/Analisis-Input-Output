@@ -139,5 +139,5 @@ with tabs3:
         dot_tk.columns = ['Angka Penggandaan Kesempatan Kerja']
         dot_tk['Rank'] = dot_tk['Angka Penggandaan Kesempatan Kerja'].rank(
             ascending=False)
-        dot_tk['1.000.000 orang'] = dot_tk['Angka Penggandaan Kesempatan Kerja']*1000000
+        dot_tk['orang'] = dot_tk['Angka Penggandaan Kesempatan Kerja']*1000000
         dot_tk
