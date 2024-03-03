@@ -134,8 +134,8 @@ with tabs2:
         sektor_unggulan_test
         # make scatter plot using value of total forward linkage and total backward linkage in sektor_unggulan
         st.write("Scatter Plot")
-        fig = px.scatter(sektor_unggulan, x='Total Forward Linkage',
-                         y='Total Backward Linkage', color='Kelompok', hover_name='index')
+        fig = px.scatter(sektor_unggulan, y='Total Forward Linkage',
+                         x='Total Backward Linkage', color='Kelompok', hover_name='index')
         # set x axis name "IDK"
         fig.update_xaxes(title_text='IDP')
         # give horizontal line and vertical line in value of 1
@@ -155,8 +155,8 @@ with tabs2:
                            showarrow=False, arrowhead=0)
         # add labels with index name
         for i in range(len(sektor_unggulan)):
-            fig.add_annotation(x=sektor_unggulan['Total Forward Linkage'][i], y=sektor_unggulan['Total Backward Linkage']
-                               [i] - 0.02, text=sektor_unggulan.index[i], showarrow=False, arrowhead=0)
+            fig.add_annotation(y=sektor_unggulan['Total Forward Linkage'][i] - 0.03, x=sektor_unggulan['Total Backward Linkage']
+                               [i], text=sektor_unggulan.index[i], showarrow=False, arrowhead=0)
         st.plotly_chart(fig)
     st.write("Sektor Unggulan")
     if transaksi_sektor is not None and input_sektor is not None:
