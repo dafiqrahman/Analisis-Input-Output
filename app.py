@@ -6,7 +6,7 @@ import plotly.express as px
 # set to wide mode
 st.set_page_config(layout="wide")
 
-st.title('Analisis Input dan Output')
+st.title('Analisis Input Output')
 
 
 # make sidebar
@@ -91,7 +91,7 @@ with tabs2:
         tfl_test.index = sequence
         tfl_test.index.name = 'Kode'
         tfl_test
-    st.write("Index daya penyebaran")
+    st.write("Indeks daya penyebaran")
     if transaksi_sektor is not None and input_sektor is not None:
         # tbl divide by mean of tbl
         tbl = tbl.div(tbl.mean())
@@ -101,7 +101,7 @@ with tabs2:
         tbl_test.index = sequence
         tbl_test.index.name = 'Kode'
         tbl_test
-    st.write("Index derajat kepekaan")
+    st.write("Indeks derajat kepekaan")
     if transaksi_sektor is not None and input_sektor is not None:
         tfl = tfl.div(tfl.mean())
         tfl['Rank'] = tfl['Total Forward Linkage'].rank(ascending=False)
