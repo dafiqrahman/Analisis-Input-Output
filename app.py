@@ -144,6 +144,15 @@ with tabs2:
                       annotation_text="", annotation_position="top right")
         fig.add_vline(x=1, line_dash="dot",
                       annotation_text="", annotation_position="top right")
+        # set annotation kelompok 1,2,3,4 in scatter plot
+        fig.add_annotation(x=1.5, y=1.5, text="Kelompok 1",
+                           showarrow=False, arrowhead=0)
+        fig.add_annotation(x=0.5, y=1.5, text="Kelompok 2",
+                           showarrow=False, arrowhead=0)
+        fig.add_annotation(x=1.5, y=0.5, text="Kelompok 3",
+                           showarrow=False, arrowhead=0)
+        fig.add_annotation(x=0.5, y=0.5, text="Kelompok 4",
+                           showarrow=False, arrowhead=0)
         # add labels with index name
         for i in range(len(sektor_unggulan)):
             fig.add_annotation(x=sektor_unggulan['Total Forward Linkage'][i], y=sektor_unggulan['Total Backward Linkage']
