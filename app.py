@@ -142,7 +142,7 @@ with tabs2:
         sektor_unggulan_test['sum'] = sektor_unggulan_test['IDP'] + \
             sektor_unggulan_test['IDK']
         sektor_unggulan_test = sektor_unggulan_test.groupby(
-            'Kelompok').apply(lambda x: x.sort_values(by='sum', ascending=False))
+            'Kelompok').apply(lambda x: x.sort_values(by='IDK', ascending=False))
         sektor_unggulan_test = sektor_unggulan_test.drop(columns='sum')
         # ungroup kelompok
         sektor_unggulan_test = sektor_unggulan_test.reset_index(
@@ -183,7 +183,7 @@ with tabs2:
         sektor_unggulan['sum'] = sektor_unggulan['Indeks Daya Penyebaran'] + \
             sektor_unggulan['Indeks Derajat Kepekaan']
         sektor_unggulan = sektor_unggulan.sort_values(
-            by='sum', ascending=False)
+            by='IDK', ascending=False)
         sektor_unggulan = sektor_unggulan.drop(columns='sum')
         sektor_unggulan
 
