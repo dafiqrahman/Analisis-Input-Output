@@ -138,6 +138,15 @@ with tabs2:
                                                      'IDK', 'Klasifikasi IDK', "Kelompok"]]
         sektor_unggulan_test = sektor_unggulan_test.sort_values(
             by='Kelompok', ascending=True, ignore_index=False)
+        # groupby kelompok, sort by sum of IDP and IDK
+        sektor_unggulan_test['sum'] = sektor_unggulan_test['IDP'] + \
+            sektor_unggulan_test['IDK']
+        sektor_unggulan_test = sektor_unggulan_test.groupby(
+            'Kelompok').apply(lambda x: x.sort_values(by='sum', ascending=False))
+        sektor_unggulan_test = sektor_unggulan_test.drop(columns='sum')
+        # ungroup kelompok
+        sektor_unggulan_test = sektor_unggulan_test.reset_index(
+            level=0, drop=True)
         sektor_unggulan_test
         # make scatter plot using value of total forward linkage and total backward linkage in sektor_unggulan
         st.write("Scatter Plot")
@@ -171,6 +180,11 @@ with tabs2:
         sektor_unggulan = sektor_unggulan[sektor_unggulan['Kelompok'] == '1']
         sektor_unggulan.columns = ['Nama Sektor', 'Indeks Daya Penyebaran',
                                    'Indeks Derajat Kepekaan', 'Pengelompokkan IDP', "Pengelompokkan IDK", 'Kelompok']
+        sektor_unggulan['sum'] = sektor_unggulan['Indeks Daya Penyebaran'] + \
+            sektor_unggulan['Indeks Derajat Kepekaan']
+        sektor_unggulan = sektor_unggulan.sort_values(
+            by='sum', ascending=False)
+        sektor_unggulan = sektor_unggulan.drop(columns='sum')
         sektor_unggulan
 
 with tabs3:
