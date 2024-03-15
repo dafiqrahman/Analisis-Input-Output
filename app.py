@@ -69,6 +69,7 @@ with tabs2:
         # get the index rank
         tbl['Rank'] = tbl['Total Backward Linkage'].rank(ascending=False)
         tbl_test = tbl.reset_index()
+        tbl_test.sort_values(by='Rank', ascending=True, inplace=True)
         tbl_test.columns = ['Nama Sektor', 'Total Backward Linkage', 'Rank']
         # set tbl_test.index to sequence A,B,C, etc
         sequence = ['A', "B", "C", "D", "E", "F", "G", "H",
@@ -86,6 +87,7 @@ with tabs2:
         # get the index rank
         tfl['Rank'] = tfl['Total Forward Linkage'].rank(ascending=False)
         tfl_test = tfl.reset_index()
+        tfl_test.sort_values(by='Rank', ascending=True, inplace=True)
         tfl_test.columns = ['Nama Sektor', 'Total Forward Linkage', 'Rank']
         # set tfl_test.index to sequence A,B,C, etc
         tfl_test.index = sequence
@@ -97,6 +99,7 @@ with tabs2:
         tbl = tbl.div(tbl.mean())
         tbl['Rank'] = tbl['Total Backward Linkage'].rank(ascending=False)
         tbl_test = tbl.reset_index()
+        tbl_test = tbl_test.sort_values(by='Rank', ascending=True)
         tbl_test.columns = ['Nama Sektor', 'Indeks Daya penyebaran', 'Rank']
         tbl_test.index = sequence
         tbl_test.index.name = 'Kode'
@@ -106,6 +109,7 @@ with tabs2:
         tfl = tfl.div(tfl.mean())
         tfl['Rank'] = tfl['Total Forward Linkage'].rank(ascending=False)
         tfl_test = tfl.reset_index()
+        tfl_test = tfl_test.sort_values(by='Rank', ascending=True)
         tfl_test.columns = ['Nama Sektor', 'Indeks Derajat Kepekaan', 'Rank']
         tfl_test.index = sequence
         tfl_test.index.name = 'Kode'
@@ -127,10 +131,13 @@ with tabs2:
                                                             == "Rendah" and x['Indeks Derajat Kepekaan'] == "Tinggi" else "3" if x['Indeks Daya Penyebaran'] == "Tinggi" and x['Indeks Derajat Kepekaan'] == "Rendah" else "4", axis=1)
         sektor_unggulan.index = sequence
         sektor_unggulan.index.name = 'Kode'
-        sektor_unggulan_test = sektor_unggulan[['index', 'Indeks Daya Penyebaran',
-                                                'Indeks Derajat Kepekaan', 'Kelompok']]
-        sektor_unggulan_test.columns = ['Nama Sektor', 'Indeks Daya Penyebaran',
-                                        'Indeks Derajat Kepekaan', 'Kelompok']
+        sektor_unggulan_test = sektor_unggulan.copy()
+        sektor_unggulan_test.columns = ["index", "IDP", "IDK",
+                                        "Klasifikasi IDK", "Klasifikasi IDP", "Kelompok"]
+        sektor_unggulan_test = sektor_unggulan_test[['index', 'IDP', 'Klasifikasi IDP',
+                                                     'IDK', 'Klasifikasi IDK', "Kelompok"]]
+        sektor_unggulan_test = sektor_unggulan_test.sort_values(
+            by='Kelompok', ascending=True)
         sektor_unggulan_test
         # make scatter plot using value of total forward linkage and total backward linkage in sektor_unggulan
         st.write("Scatter Plot")
@@ -176,6 +183,7 @@ with tabs3:
         sum_B = sum_B.to_frame()
         sum_B['Rank'] = sum_B['Angka Penggandaan Output'].rank(ascending=False)
         sum_B = sum_B.reset_index()
+        sum_B.sort_values(by='Rank', ascending=True, inplace=True)
         sum_B.columns = ['Nama Sektor', 'Angka Penggandaan Output', 'Rank']
         sum_B.index = sequence
         sum_B.index.name = 'Kode'
@@ -195,6 +203,7 @@ with tabs3:
             ascending=False)
         dot_tk['orang'] = dot_tk['Angka Penggandaan Kesempatan Kerja']*1000000
         dot_tk = dot_tk.reset_index()
+        dot_tk.sort_values(by='Rank', ascending=True, inplace=True)
         dot_tk.columns = ['Nama Sektor',
                           'Angka Penggandaan Kesempatan Kerja', 'Rank', 'orang']
         dot_tk.index = sequence
