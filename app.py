@@ -183,7 +183,7 @@ with tabs2:
         sektor_unggulan['sum'] = sektor_unggulan['Indeks Daya Penyebaran'] + \
             sektor_unggulan['Indeks Derajat Kepekaan']
         sektor_unggulan = sektor_unggulan.sort_values(
-            by='IDK', ascending=False)
+            by='Indeks Derajat Kepekaan', ascending=False)
         sektor_unggulan = sektor_unggulan.drop(columns='sum')
         sektor_unggulan
 
