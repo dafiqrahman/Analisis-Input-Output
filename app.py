@@ -44,7 +44,13 @@ with tabs2:
     if transaksi_sektor is not None and input_sektor is not None:
         df_A = df1.copy()
         df_A = df_A.div(df2.iloc[0], axis=1)
-        df_A
+        df_a_tmp = df_A.copy()
+        df_a_tmp.columns = ['A', "B", "C", "D", "E", "F", "G", "H",
+                            "I", "J", "K", "L", "MN", "O", "P", "Q", "RSTU"]
+        df_a_tmp.index = ['A', "B", "C", "D", "E", "F", "G", "H",
+                          "I", "J", "K", "L", "MN", "O", "P", "Q", "RSTU"]
+        df_a_tmp.index.name = 'Kode'
+        df_a_tmp
     st.write("Matriks Kebalikan Leontief")
     if transaksi_sektor is not None and input_sektor is not None:
         # create identity matrix
@@ -58,7 +64,13 @@ with tabs2:
         df_B_matrix = df_B.values
         df_B_inverse = pd.DataFrame(np.linalg.inv(
             df_B_matrix), df_B.index, df_B.columns)
-        df_B_inverse
+        df_B_inverse_tmp = df_B_inverse.copy()
+        df_B_inverse_tmp.columns = ['A', "B", "C", "D", "E", "F", "G", "H",
+                                    "I", "J", "K", "L", "MN", "O", "P", "Q", "RSTU"]
+        df_B_inverse_tmp.index = ['A', "B", "C", "D", "E", "F", "G", "H",
+                                  "I", "J", "K", "L", "MN", "O", "P", "Q", "RSTU"]
+        df_B_inverse_tmp.index.name = 'Kode'
+        df_B_inverse_tmp
     st.write("Total Backward Linkage")
     if transaksi_sektor is not None and input_sektor is not None:
         tbl = df_B_inverse.sum(axis=0)
