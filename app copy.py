@@ -7,36 +7,38 @@ import plotly.express as px
 st.set_page_config(layout="wide")
 
 st.title('Analisis Input Output')
-('Oleh : Adinda Nur Halisyah')
+st.title('Oleh : Adinda Nur Halisyah')
 
 # make sidebar
 st.sidebar.title('Masukkan data')
 # input data1 using file_uploader
 transaksi_sektor = st.sidebar.file_uploader(
-    'Upload data transaksi antara', type='xlsx')
+    'Upload data transaksi antar sektor', type='xlsx')
 # input data2 using file_uploader
 input_sektor = st.sidebar.file_uploader(
-    'Upload data input total', type='xlsx')
+    'Upload data input total sektor', type='xlsx')
 # input data3 using file_uploader
 jumlah_tenaga_kerja = st.sidebar.file_uploader(
-    'Upload data tenaga kerja', type='xlsx')
+    'Upload data jumlah tenaga kerja', type='xlsx')
 
-# make 3 tabs, preview data, sektor unggulan, angka pengganda
+# make 3 tabs, preview data, sektor unggulan, angka penggandaan
 tabs1, tabs2, tabs3 = st.tabs(
     ['Preview Data', 'Sektor Unggulan', 'Angka Pengganda'])
 with tabs1:
-    st.write('Data Transaksi Antara')
+    st.write('Data Transaksi Antar Sektor')
     if transaksi_sektor is not None:
         df1 = pd.read_excel(transaksi_sektor, index_col=0)
         # set index to A,B,C, etc
         df1
-    st.write('Data Input Total')
+    st.write('Data Input Total Sektor')
     if input_sektor is not None:
         df2 = pd.read_excel(input_sektor)
         st.write(df2)
-    st.write('Data Tenaga Kerja')
+    st.write('Data Jumlah Tenaga Kerja')
     if jumlah_tenaga_kerja is not None:
         df3 = pd.read_excel(jumlah_tenaga_kerja)
+        st.write(df3)
+
 with tabs2:
     st.write("Matriks koefisien input")
     if transaksi_sektor is not None and input_sektor is not None:
@@ -49,7 +51,7 @@ with tabs2:
                           "I", "J", "K", "L", "MN", "O", "P", "Q", "RSTU"]
         df_a_tmp.index.name = 'Kode'
         df_a_tmp
-    st.write("Matriks I-A")
+    st.write("Matriks Kebalikan Leontief")
     if transaksi_sektor is not None and input_sektor is not None:
         # create identity matrix
         I = np.identity(len(df_A))
@@ -58,24 +60,8 @@ with tabs2:
         I = pd.DataFrame(I, df_A.index, df_A.columns)
         # substract df_A with identity matrix
         df_B = I.sub(df_A)
-        df_b_tmp = df_B.copy()
-        df_b_tmp.columns = ['A', "B", "C", "D", "E", "F", "G", "H",
-                            "I", "J", "K", "L", "MN", "O", "P", "Q", "RSTU"]
-        df_b_tmp.index = ['A', "B", "C", "D", "E", "F", "G", "H",
-                          "I", "J", "K", "L", "MN", "O", "P", "Q", "RSTU"]
-        df_b_tmp.index.name = 'Kode'
-        df_b_tmp
-
-    st.write("Determinan I-A")
-    if transaksi_sektor is not None and input_sektor is not None:
-        df_B_matrix = df_B.values
-        df_B_det = np.linalg.det(df_B_matrix)
-        df_B_det_tmp = str(df_B_det)
-        st.write(":blue[{}]".format(df_B_det_tmp))
-
-    st.write("Matriks Invers Leontief")
-    if transaksi_sektor is not None and input_sektor is not None:
         # create inverse matrix of df_B
+        df_B_matrix = df_B.values
         df_B_inverse = pd.DataFrame(np.linalg.inv(
             df_B_matrix), df_B.index, df_B.columns)
         df_B_inverse_tmp = df_B_inverse.copy()
@@ -150,11 +136,11 @@ with tabs2:
         sektor_unggulan['Total Forward Linkage'] = tfl['Total Forward Linkage']
         sektor_unggulan.drop(columns="Rank", inplace=True)
         sektor_unggulan['Indeks Derajat Kepekaan'] = sektor_unggulan['Total Forward Linkage'].apply(
-            lambda x: "Di atas rata-rata" if x > 1 else "Di bawah rata-rata")
+            lambda x: "Tinggi" if x > 1 else "Rendah")
         sektor_unggulan['Indeks Daya Penyebaran'] = sektor_unggulan['Total Backward Linkage'].apply(
-            lambda x: "Di atas rata-rata" if x > 1 else "Di bawah rata-rata")
-        sektor_unggulan['Kelompok'] = sektor_unggulan.apply(lambda x: "1" if x['Indeks Daya Penyebaran'] == "Di atas rata-rata" and x['Indeks Derajat Kepekaan'] == "Di atas rata-rata" else "2" if x['Indeks Daya Penyebaran']
-                                                            == "Di bawah rata-rata" and x['Indeks Derajat Kepekaan'] == "Di atas rata-rata" else "3" if x['Indeks Daya Penyebaran'] == "Di atas rata-rata" and x['Indeks Derajat Kepekaan'] == "Di bawah rata-rata" else "4", axis=1)
+            lambda x: "Tinggi" if x > 1 else "Rendah")
+        sektor_unggulan['Kelompok'] = sektor_unggulan.apply(lambda x: "1" if x['Indeks Daya Penyebaran'] == "Tinggi" and x['Indeks Derajat Kepekaan'] == "Tinggi" else "2" if x['Indeks Daya Penyebaran']
+                                                            == "Rendah" and x['Indeks Derajat Kepekaan'] == "Tinggi" else "3" if x['Indeks Daya Penyebaran'] == "Tinggi" and x['Indeks Derajat Kepekaan'] == "Rendah" else "4", axis=1)
         sektor_unggulan.index = sequence
         sektor_unggulan.index.name = 'Kode'
         sektor_unggulan_test = sektor_unggulan.copy()
@@ -170,7 +156,7 @@ with tabs2:
         sektor_unggulan_test = sektor_unggulan_test.groupby(
             'Kelompok').apply(lambda x: x.sort_values(by='IDK', ascending=False))
         sektor_unggulan_test = sektor_unggulan_test.drop(columns='sum')
-# ungroup kelompok
+        # ungroup kelompok
         sektor_unggulan_test = sektor_unggulan_test.reset_index(
             level=0, drop=True)
         sektor_unggulan_test
@@ -214,21 +200,21 @@ with tabs2:
         sektor_unggulan
 
 with tabs3:
-    st.write("Angka Pengganda Output")
+    st.write("angka penggandaan output")
     if transaksi_sektor is not None and input_sektor is not None and jumlah_tenaga_kerja is not None:
         # sum of df_B_inverse
         sum_B = df_B_inverse.sum()
-        sum_B.name = 'Angka Pengganda Output'
+        sum_B.name = 'Angka Penggandaan Output'
         sum_B = sum_B.T
         sum_B = sum_B.to_frame()
-        sum_B['Rank'] = sum_B['Angka Pengganda Output'].rank(ascending=False)
+        sum_B['Rank'] = sum_B['Angka Penggandaan Output'].rank(ascending=False)
         sum_B = sum_B.reset_index()
         sum_B.index = sequence
         sum_B.sort_values(by='Rank', ascending=True, inplace=True)
-        sum_B.columns = ['Nama Sektor', 'Angka Pengganda Output', 'Rank']
+        sum_B.columns = ['Nama Sektor', 'Angka Penggandaan Output', 'Rank']
         sum_B.index.name = 'Kode'
         sum_B
-    st.write("Angka Pengganda Tenaga Kerja")
+    st.write("Angka Pengganda Kesempatan Kerja")
     # df3 divide by sum of df2
     if transaksi_sektor is not None and input_sektor is not None and jumlah_tenaga_kerja is not None:
         df3 = df3.div(df2.sum())
@@ -237,15 +223,15 @@ with tabs3:
         # set column name to columns of df3
         dot_tk = pd.DataFrame(dot_tk, df3.index, df3.columns)
         dot_tk = dot_tk.T
-        # set column name to "Angla Pengganda Tenaga Kerja"
-        dot_tk.columns = ['Angka Pengganda Tenaga Kerja']
-        dot_tk['Rank'] = dot_tk['Angka Pengganda Tenaga Kerja'].rank(
+        # set column name to "Angla Penggandaan Kesempatan Kerja"
+        dot_tk.columns = ['Angka Penggandaan Kesempatan Kerja']
+        dot_tk['Rank'] = dot_tk['Angka Penggandaan Kesempatan Kerja'].rank(
             ascending=False)
-        dot_tk['orang'] = dot_tk['Angka Pengganda Tenaga Kerja']*1000000
+        dot_tk['orang'] = dot_tk['Angka Penggandaan Kesempatan Kerja']*1000000
         dot_tk = dot_tk.reset_index()
         dot_tk.index = sequence
         dot_tk.sort_values(by='Rank', ascending=True, inplace=True)
         dot_tk.columns = ['Nama Sektor',
-                          'Angka Pengganda Tenaga Kerja', 'Rank', 'orang']
+                          'Angka Penggandaan Kesempatan Kerja', 'Rank', 'orang']
         dot_tk.index.name = 'Kode'
         dot_tk
