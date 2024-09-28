@@ -37,6 +37,7 @@ with tabs1:
     st.write('Data Tenaga Kerja')
     if jumlah_tenaga_kerja is not None:
         df3 = pd.read_excel(jumlah_tenaga_kerja)
+        st.write(df3)
 with tabs2:
     st.write("Matriks koefisien input")
     if transaksi_sektor is not None and input_sektor is not None:
